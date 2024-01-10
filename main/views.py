@@ -5,4 +5,7 @@ from django.shortcuts import render
 
 
 def main(request: HttpRequest) -> HttpResponse:
-	return render(request, "main/index.html")
+	context = {
+		"title": "Test"
+	}
+	return render(request, "main/index.html", context)
