@@ -3,26 +3,36 @@ from django.db import models
 
 # Create your models here.
 
-class Category(models.Model):
-	title = models.CharField()
+class Categories(models.Model):
+	title = models.CharField(max_length=100, unique=True, verbose_name="Название")
+	slug = models.SlugField(verbose_name="URL", unique=True)
+
+	class Meta:
+		db_table = "Category"
+		verbose_name = "Категорию"
+		verbose_name_plural = "Категории"
 
 	def __str__(self):
 		return self.title
 
 
-class Good(models.Model):
-	slug = models.SlugField()
-	title = models.CharField()
-	description = models.CharField()
-	image = models.ImageField()
-	quantity = models.IntegerField(default=0)
-	price = models.IntegerField()
-	discount = models.IntegerField()
-	sale = models.IntegerField()
-	id_category = models.ForeignKey(Category, on_delete=models.CASCADE)
+class Products(models.Model):
+	slug = models.SlugField(unique=True, verbose_name="URL")
+	title = models.CharField(max_length=100, verbose_name="Название")
+	description = models.TextField(max_length=500, blank=True, null=True, verbose_name="Описание")
+	images = models.ImageField(upload_to="products/`", blank=True, null=True, verbose_name="Изображение")
+	quantity = models.PositiveIntegerField(default=0, verbose_name="Кол-во")
+	price = models.DecimalField(default=0.00, max_digits=9999999.99, decimal_places=2, verbose_name="Цена")
+	discount = models.DecimalField(default=0.00, max_digits=100.00, decimal_places=2, verbose_name="Скидка")
+	id_category = models.ForeignKey(Categories,
+									on_delete=models.CASCADE,
+									verbose_name="Категория",
+									related_name="products")
+
+	class Meta:
+		db_table = "Product"
+		verbose_name = "Товар"
+		verbose_name_plural = "Товары"
 
 	def __str__(self):
 		return self.title
-
-
-
