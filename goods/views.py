@@ -1,8 +1,14 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.views.generic import ListView
+
+from goods.models import Categories
 
 
-# Create your views here.
+class ListCatalog(ListView):
+	model = Categories
+	template_name = "goods/catalog.html"
+	context_object_name = "categories"
 
 
 def catalog(request: HttpRequest) -> HttpResponse:

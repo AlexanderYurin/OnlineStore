@@ -1,15 +1,32 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.views.generic import ListView
+
+from goods.models import Categories
+
 
 # Create your views here.
 
+class Index(ListView):
+	model = Categories
+	template_name = "main/index.html"
 
-def main(request: HttpRequest) -> HttpResponse:
-	context = {
-		"title": "Test",
-		"footer_text": "Test footer"
-	}
-	return render(request, "main/index.html", context)
+	def get_context_data(self, *, object_list=None, **kwargs):
+		context = super().get_context_data()
+		context = {
+			"title": "Test",
+			"footer_text": "Test footer",
+			"categories": self.object_list
+		}
+		return context
+
+
+# def main(request: HttpRequest) -> HttpResponse:
+# 	context = {
+# 		"title": "Test",
+# 		"footer_text": "Test footer"
+# 	}
+# 	return render(request, "main/index.html", context)
 
 def about(request: HttpRequest) -> HttpResponse:
 	context = {
@@ -18,4 +35,3 @@ def about(request: HttpRequest) -> HttpResponse:
 		"footer_text": "Test footer",
 	}
 	return render(request, "main/about.html", context)
-
