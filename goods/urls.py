@@ -10,5 +10,6 @@ app_name = "catalog"
 
 urlpatterns = [
     path("<slug:cat_slug>/", CategoryDetail.as_view(), name="catalog"),
-    path("product/<slug:slug>/", ProductDetail.as_view(), name="product")
+    path("product/<slug:slug>/", ProductDetail.as_view(), name="product"),
+
 ]
