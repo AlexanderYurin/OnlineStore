@@ -1,5 +1,6 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.views import View
 from django.views.generic import ListView
 
 from goods.models import Categories
@@ -16,7 +17,6 @@ class Index(ListView):
 		context = {
 			"title": "Test",
 			"footer_text": "Test footer",
-			"categories": self.object_list
 		}
 		return context
 
