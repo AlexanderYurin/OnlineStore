@@ -9,6 +9,7 @@ app_name = "catalog"
 
 
 urlpatterns = [
+    path("search/", CategoryDetail.as_view(), name="search"),
     path("<slug:cat_slug>/", CategoryDetail.as_view(), name="catalog"),
     path("product/<slug:slug>/", ProductDetail.as_view(), name="product"),
 
