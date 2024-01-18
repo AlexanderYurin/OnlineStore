@@ -1,9 +1,7 @@
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.template.loader import render_to_string
 
 from carts.models import Cart
-from carts.utils import get_user_cart, get_cart_items_html
+from carts.utils import get_cart_items_html
 from goods.models import Products
 
 
@@ -47,9 +45,8 @@ def cart_change(request):
 	cart = Cart.objects.filter(id=cart_id).update(quantity=quantity)
 
 	data = {
-		"message": "Товар удален из корзины!",
+		"message": "Кол-во изменено",
 		"cart_items_html": get_cart_items_html(request),
-
 	}
 
 	return JsonResponse(data)

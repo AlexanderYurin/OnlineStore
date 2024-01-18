@@ -32,7 +32,7 @@ class LoginUser(MessagesMixin, LoginView):
 
 
 class LogoutUser(MessagesMixin, LogoutView):
-	messages = "вышел из профиля"
+	messages = "Вы вышли из профиля"
 	success_url = "main:main"
 
 
