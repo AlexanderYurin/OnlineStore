@@ -5,9 +5,11 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect
 from django.views.generic import CreateView, FormView
 
+from carts.models import Cart
 from users.forms import RegistrationUserForm, ProfileForm
 from users.mixins import MessagesMixin
 from users.models import User
+from users.utils import get_session_key
 
 
 class RegistrationUser(MessagesMixin, CreateView):
@@ -18,10 +20,14 @@ class RegistrationUser(MessagesMixin, CreateView):
 	success_url = "main:main"
 
 	def form_valid(self, form):
-		form.save()
+		super().form_valid(form)
+		session_key = get_session_key(self.request)
 		user = form.instance
 		login(self.request, user)
-		return self.get_success_url()
+		cart = Cart.objects.filter(session_key=session_key)
+		if cart.exists():
+			cart.update(user=user)
+		return redirect(self.get_success_url())
 
 
 class LoginUser(MessagesMixin, LoginView):
@@ -29,6 +35,14 @@ class LoginUser(MessagesMixin, LoginView):
 	template_name = "users/login.html"
 	messages = "Добро пожаловать"
 	success_url = "main:main"
+
+	def form_valid(self, form):
+		session_key = get_session_key(self.request)
+		login(self.request, form.get_user())
+		cart = Cart.objects.filter(session_key=session_key)
+		if cart.exists():
+			cart.update(user=self.request.user)
+		return super().form_valid(form)
 
 
 class LogoutUser(MessagesMixin, LogoutView):

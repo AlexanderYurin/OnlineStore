@@ -56,8 +56,8 @@
 
 	</div>
 </div>
-{% if carts %}
-<a class="btn btn-dark" href="">
+{% if carts and not order %}
+<a class="btn btn-dark" href="{% url "order:create_order" %}">
 	Оформить заказ
 </a>
 {% endif %}

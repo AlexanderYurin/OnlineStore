@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 # Create your models here.
@@ -37,6 +38,9 @@ class Products(models.Model):
 
 	def __str__(self) -> str:
 		return self.title
+
+	def get_absolute_url(self):
+		return reverse("catalog:product", kwargs={"slug": self.slug})
 
 	def display_id(self) -> str:
 		return f"{self.id:05}"
