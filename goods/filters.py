@@ -1,46 +1,41 @@
+from abc import ABC, abstractmethod
+
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, SearchHeadline
 from django.db.models.manager import BaseManager
-from django.db.models import Q
 
 from goods.models import Products
 
 
-class ProductFilter:
-	def __init__(self, query):
-		self.query = query
-
-
-class ProductFilterID:
+class ProductSearch(ABC):
 	def __init__(self, query: str):
 		self.query = query
 
+	@abstractmethod
+	def search(self):
+		pass
+
+
+class ProductSearchID(ProductSearch):
+	"""Поиск по id продукта"""
 	def search(self) -> BaseManager[Products]:
 		return Products.objects.filter(id=int(self.query))
 
 
-class ProductFilterTitle:
-	def __init__(self, query: str):
-		self.query = query
-
+class ProductSearchTitle(ProductSearch):
+	"""Поиск по Title и Description продукта"""
 	def search(self) -> BaseManager[Products]:
-		keywords = [word for word in self.query.split() if len(word) > 3]
-		q_obj = Q()
+		vector = SearchVector("title", "description")
+		query = SearchQuery(self.query)
+		queryset = Products.objects.annotate(rank=SearchRank(vector, query)).filter(rank__gt=0).order_by("-rank")
+		queryset = queryset.annotate(headline=SearchHeadline(
+			"title", query, start_sel="<span style='background-color: yellow;'>", stop_sel="</span>")).all()
+		queryset = queryset.annotate(bodyline=SearchHeadline(
+			"description", query, start_sel="<span style='background-color: yellow;'>", stop_sel="</span>")).all()
 
-		for token in keywords:
-			q_obj |= Q(title__icontains=token)
-
-		return Products.objects.filter(q_obj)
+		return queryset
 
 
 def query_search(query: str) -> BaseManager[Products] | None:
 	if query.isdigit() and len(query) <= 5:
-		return Products.objects.filter(id=int(query))
-	vector = SearchVector("title", "description")
-	query = SearchQuery(query)
-	queryset = Products.objects.annotate(rank=SearchRank(vector, query)).filter(rank__gt=0).order_by("-rank")
-	queryset = queryset.annotate(headline=SearchHeadline(
-		"title", query, start_sel="<span style='background-color: yellow;'>", stop_sel="</span>")).all()
-	queryset = queryset.annotate(bodyline=SearchHeadline(
-		"description", query, start_sel="<span style='background-color: yellow;'>", stop_sel="</span>")).all()
-
-	return queryset
+		return ProductSearchID(query).search()
+	return ProductSearchTitle(query).search()
