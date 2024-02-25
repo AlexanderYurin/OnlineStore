@@ -42,7 +42,7 @@ class LoginUser(MessagesMixin, LoginView):
 		cart = Cart.objects.filter(session_key=session_key)
 		if cart.exists():
 			cart.update(user=self.request.user)
-		return super().form_valid(form)
+		return redirect(self.get_success_url())
 
 
 class LogoutUser(MessagesMixin, LogoutView):
@@ -55,6 +55,7 @@ class ProfileView(LoginRequiredMixin, MessagesMixin, FormView):
 	template_name = "users/profile.html"
 	success_url = "user:profile"
 	messages = "внесены изменения"
+	login_url = "user:login"
 
 	def form_valid(self, form):
 		form.save()
