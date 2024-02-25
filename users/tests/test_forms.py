@@ -35,18 +35,18 @@ def test_registration_user_form_invalid():
 
 
 @pytest.mark.django_db
-def test_profile_form_valid():
+def test_profile_form_valid(create_image):
 	form_data = {
 		"first_name": "test_first_name",
 		"last_name": "test_last_name",
 		"email": "test_email@example.com",
 	}
 
+	image = create_image
 	file_data = {
-		"image": SimpleUploadedFile("test_image.jpg", b"#000000", content_type="image/jpeg"),
+		"image": SimpleUploadedFile("test_image.jpg", image, content_type="image/jpeg"),
 	}
 
 	form = ProfileForm(data=form_data, files=file_data)
-	print(form.errors)
 	assert form.is_valid()
 
