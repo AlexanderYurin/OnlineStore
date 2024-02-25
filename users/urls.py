@@ -14,6 +14,6 @@ urlpatterns = [
     path("registration/", RegistrationUser.as_view(), name="registration"),
     path("profile/", ProfileView.as_view(), name="profile"),
     path("logout/", LogoutUser.as_view(), name="logout"),
-    path("user_cars/", TemplateView.as_view(template_name="users/user_cart.html"), name="user_cart")
+    path("user_cart/", TemplateView.as_view(template_name="users/user_cart.html"), name="user_cart")
 
 ]
