@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load carts_tags %}
 
 {% block title %}
 	Корзина
  {%  endblock %}
 
 {% block content %}
+	{% carts_user request as carts %}
 	<div class="row mt-1">
 		<div class="col-lg-2">
 			<!-- Пустой блок на усмотрение -->
