@@ -10,6 +10,7 @@ from users.forms import RegistrationUserForm, ProfileForm
 from users.mixins import MessagesMixin
 from users.models import User
 from users.utils import get_session_key
+from utils.redis_utils import CacheMixin
 
 
 class RegistrationUser(MessagesMixin, CreateView):
@@ -30,19 +31,44 @@ class RegistrationUser(MessagesMixin, CreateView):
 		return redirect(self.get_success_url())
 
 
-class LoginUser(MessagesMixin, LoginView):
+class LoginUser(CacheMixin, MessagesMixin, LoginView):
 	form_class = AuthenticationForm
 	template_name = "users/login.html"
 	messages = "Добро пожаловать"
 	success_url = "main:main"
 
+	def get(self, request, *args, **kwargs):
+		ban = self.get_cache(request)
+		if ban:
+			time = self.get_cache_timeout(request)
+			self.messages = f"Бан: {time} секунд! Попробуйте позже"
+			return redirect(self.get_success_url())
+		return super().get(request, *args, **kwargs)
+
 	def form_valid(self, form):
+		cache = self.get_cache(self.request)
+		if cache:
+			cache.delete(self.get_cache_key(self.request))
+
 		session_key = get_session_key(self.request)
 		login(self.request, form.get_user())
 		cart = Cart.objects.filter(session_key=session_key)
 		if cart.exists():
 			cart.update(user=self.request.user)
 		return redirect(self.get_success_url())
+
+	def form_invalid(self, form):
+		attempts = self.get_cache(self.request)
+		if attempts and int(attempts.decode()) >= 3:
+			self.set_cache(request=self.request, value="Ban", timeout=self.ban_time)
+			time = self.get_cache_timeout(self.request)
+			self.messages = f"Бан: {time} секунд! Попробуйте позже"
+			return redirect(self.get_success_url())
+		if not attempts:
+			self.set_cache(request=self.request, value=2)
+		else:
+			self.set_cache(request=self.request, value=3)
+		return super().form_invalid(form)
 
 
 class LogoutUser(MessagesMixin, LogoutView):

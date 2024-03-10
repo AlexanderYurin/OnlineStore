@@ -4,7 +4,7 @@ from django import template
 from django.utils.http import urlencode
 
 from goods.models import Categories
-from utils.redis_utils import get_redis_connection
+from utils.redis_utils import CacheMixin
 
 register = template.Library()
 
@@ -19,7 +19,7 @@ def get_categories():
     categories содержит все объекты категорий.
 
     """
-	cache = get_redis_connection()
+	cache = CacheMixin.get_redis_connection()
 	data = cache.get("categories")
 
 	if data is not None:
