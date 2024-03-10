@@ -55,9 +55,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.cache.UpdateCacheMiddleware',
+	# 'django.middleware.cache.UpdateCacheMiddleware',
 	'django.middleware.common.CommonMiddleware',
-	'django.middleware.cache.FetchFromCacheMiddleware'
+	# 'django.middleware.cache.FetchFromCacheMiddleware'
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
@@ -163,12 +163,12 @@ REDIS_PORT = 6379
 REDIS_DB = 0
 
 # Пример использования настроек Redis в кеше
-CACHES = {
-	'default': {
-		'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-		'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
-		'OPTIONS': {
-			'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-		}
-	}
-}
+# CACHES = {
+# 	'default': {
+# 		'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+# 		'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
+# 		'OPTIONS': {
+# 			'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+# 		}
+# 	}
+# }

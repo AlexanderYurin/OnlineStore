@@ -16,7 +16,7 @@ def test_catalog_url(client, create_product):
 	slug = product.id_category.slug
 	response = client.get(reverse("catalog:catalog", kwargs={"cat_slug": slug}))
 	assert response.status_code == 200
-	assert product.id_category.title.encode() in response.content
+	assert slug.encode() in response.content
 
 
 @pytest.mark.django_db

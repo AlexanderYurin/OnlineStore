@@ -27,3 +27,5 @@ sqlparse==0.4.4
 stack-data==0.6.3
 traitlets==5.14.1
 wcwidth==0.2.13
+
+redis~=5.0.2
