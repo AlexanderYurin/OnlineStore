@@ -21,13 +21,6 @@ class Index(ListView):
 		return context
 
 
-# def main(request: HttpRequest) -> HttpResponse:
-# 	context = {
-# 		"title": "Test",
-# 		"footer_text": "Test footer"
-# 	}
-# 	return render(request, "main/index.html", context)
-
 def about(request: HttpRequest) -> HttpResponse:
 	context = {
 		"title": "О на",
