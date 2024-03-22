@@ -158,7 +158,7 @@ CACHE_MIDDLEWARE_SECONDS = '600'
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 
 # Настройки для подключения к Redis
-REDIS_HOST = 'localhost'
+REDIS_HOST = "redis"
 REDIS_PORT = 6379
 REDIS_DB = 0
 
@@ -172,3 +172,4 @@ REDIS_DB = 0
 # 		}
 # 	}
 # }
+CELERY_BROKER_URL = "redis://redis:6379/0"

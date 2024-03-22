@@ -21,3 +21,23 @@ services:
     command: sh -c "python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - postgres
+  redis:
+    image: redis:latest
+    hostname: redis
+    volumes:
+      - ./redis:/var/lib/redis/data
+
+  worker:
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A celery_app.app worker --loglevel=info
+
+    volumes:
+      - .:/app
+    links:
+      - redis
+    depends_on:
+      - postgres
+      - redis
